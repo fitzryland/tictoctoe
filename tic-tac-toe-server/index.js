@@ -33,6 +33,7 @@ db.once('open',function(){
 // Setting up Socket.io
 let io =  socket(server);
 let ticTac = {
+  // @TODO only emit to players of the game
   filter: { name: "tic-tac-toe" },
   createGame: async () => {
     let gameState = await ticTac.getNewState()
@@ -44,6 +45,10 @@ let ticTac = {
     }).save()
     io.emit("newGame", newSession)
   },
+  getGame: async (gameId) => {
+    let curState = await ticTac.getState(gameId)
+    io.emit('updateGame', curState)
+  },
   getNewState: async () => {
     let game = await db.collections.games.findOne(ticTac.filter)
     return game.state
@@ -51,15 +56,20 @@ let ticTac = {
   getState: async (gameId) => {
     let that = this
     let game = await db.collections.gamesessions.findOne({ id: gameId })
-    return game.state
+    if ( game == null ) {
+      game = { status: false }
+    } else {
+      game.status = true
+    }
+    return game
   },
   setState: async (gameId, gameState) => {
     await db.collections.gamesessions.updateOne({ id: gameId }, { $set: { state: gameState } })
     io.emit("setBoxes", gameState.boxes)
   },
   updateState: async (gameId, callback) => {
-    let gameState = await ticTac.getState(gameId)
-    let newState = callback(gameState)
+    let game = await ticTac.getState(gameId)
+    let newState = callback(game.state)
     ticTac.setState(gameId, newState)
   }
 }
@@ -70,6 +80,9 @@ io.on("connection", function(socket){
     console.log('createGameSession')
     ticTac.createGame()
   })
+  socket.on('getGameSession', async (gameId) => {
+    ticTac.getGame(gameId)
+  })
   socket.on("clickBox", async function(chat) {
     ticTac.updateState(chat.gameId, (gameState) => {
       let i = gameState.boxes.findIndex((el) => {
@@ -79,8 +92,9 @@ io.on("connection", function(socket){
       return gameState
     })
   })
-  socket.on("resetGame", async function() {
-    ticTac.updateState((gameState) => {
+  socket.on("resetGame", async function(gameId) {
+    console.log('game from resetGame', gameId)
+    ticTac.updateState(gameId, (gameState) => {
       gameState.boxes.forEach((item, key) => {
         gameState.boxes[key].checked = false
       })

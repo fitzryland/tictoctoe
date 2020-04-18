@@ -8,6 +8,7 @@ import User from './components/User.vue'
 import Start from './components/Start.vue'
 import TicTacToeBoard from './components/TicTacToeBoard.vue'
 
+
 Vue.use(VueRouter)
 Vue.use(new VueSocketIO({
   debug: true,
@@ -30,6 +31,11 @@ const router = new VueRouter({
   routes,
   mode: 'history'
 })
+const waitForStorageToBeReady = async (to, from, next) => {
+  await store.restored
+  next()
+}
+router.beforeEach(waitForStorageToBeReady)
 
 new Vue({
   el: '#app',

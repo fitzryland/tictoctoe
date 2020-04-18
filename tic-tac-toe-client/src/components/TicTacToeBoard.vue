@@ -12,30 +12,48 @@
         {{ box.id }}
       </button>
     </div>
-    <button
-      class="reset_button"
-      v-on:click="resetGame"
-    >Reset Game</button>
+    <div>
+      Game ID: {{ gameId }}
+    </div>
+    <div class="buttons">
+      <button
+        class="button"
+        v-on:click=leaveGame
+      >Leave Game</button>
+      <button
+        class="button"
+        v-on:click="resetGame"
+      >Reset Game</button>
+    </div>
   </div>
 </template>
 <script>
   import VueSocketIO from 'vue-socket.io'
   export default {
     name: 'TicTacToeBoard',
-    computed: {
-      boxes() {
-        return this.$store.state.boxes
-      }
-    },
     data() {
       return {
         isConnected: false,
         socketMessage: ''
       }
     },
+    computed: {
+      boxes() {
+        let boxes = this.$store.state.boxes
+        return boxes
+      },
+      gameId() {
+        let gameId = this.$store.state.gameId
+        return gameId
+      }
+    },
     async mounted () {
-      // @TODO next need to check if joining game
-      await this.$socket.emit('createGameSession')
+      let gameId = this.$store.state.gameId
+      if ( gameId ) {
+        this.getGame(gameId);
+      } else {
+        this.newGame();
+      }
     },
     sockets: {
       connect () {
@@ -48,12 +66,28 @@
       },
       newGame (data) {
         this.$store.dispatch('newGame', data)
+        this.$store.commit('setGameId', data.id)
       },
       setBoxes (data) {
         this.$store.dispatch('checkBox', data)
+      },
+      updateGame (game) {
+        console.log('game', game)
+        if ( game.status ) {
+          // update the state
+          this.$store.commit('newGameMut', game)
+        } else {
+          // @TODO display error
+        }
       }
     },
     methods: {
+      async newGame() {
+        await this.$socket.emit('createGameSession')
+      },
+      async getGame(gameId) {
+        await this.$socket.emit('getGameSession', gameId)
+      },
       async clickBox(data) {
         let message = {
           gameId: this.$store.state.gameId,
@@ -62,7 +96,10 @@
         await this.$socket.emit('clickBox', message)
       },
       async resetGame() {
-        await this.$socket.emit('resetGame')
+        await this.$socket.emit('resetGame', this.$store.state.gameId)
+      },
+      leaveGame() {
+        //
       }
     }
   }
@@ -79,9 +116,12 @@
 .cell.active {
   background-color: lightblue;
 }
-.reset_button {
-  font-size: 18px;
+.buttons {
+  display: flex;
   margin-top: 100px;
+}
+.button {
+  font-size: 18px;
   padding: 10px 20px;
 }
 </style>
