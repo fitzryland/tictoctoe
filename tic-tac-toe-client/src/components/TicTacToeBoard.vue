@@ -22,7 +22,7 @@
       >Leave Game</button>
       <button
         class="button"
-        v-on:click="resetGame"
+        v-on:click=resetGame
       >Reset Game</button>
     </div>
   </div>
@@ -48,9 +48,10 @@
       }
     },
     async mounted () {
+      this.registerUser()
       let gameId = this.$store.state.gameId
       if ( gameId ) {
-        this.getGame(gameId);
+        this.joinGame(gameId);
       } else {
         this.newGame();
       }
@@ -72,7 +73,6 @@
         this.$store.dispatch('checkBox', data)
       },
       updateGame (game) {
-        console.log('game', game)
         if ( game.status ) {
           // update the state
           this.$store.commit('newGameMut', game)
@@ -83,10 +83,10 @@
     },
     methods: {
       async newGame() {
-        await this.$socket.emit('createGameSession')
+        await this.$socket.emit('createGameSession', this.$store.state.userId)
       },
-      async getGame(gameId) {
-        await this.$socket.emit('getGameSession', gameId)
+      async joinGame(gameId) {
+        await this.$socket.emit('joinGameSession', gameId, this.$store.state.userId)
       },
       async clickBox(data) {
         let message = {
@@ -98,8 +98,16 @@
       async resetGame() {
         await this.$socket.emit('resetGame', this.$store.state.gameId)
       },
-      leaveGame() {
-        //
+      async leaveGame() {
+        // remove user from game session
+        await this.$socket.emit('leaveGame', this.$store.state.gameId, this.$store.state.userId)
+        // set gameId to null
+        this.$store.commit('setGameId', null)
+        // navigate to home
+        this.$router.push('/')
+      },
+      async registerUser() {
+        await this.$socket.emit('registerUser', this.$store.state.userId)
       }
     }
   }

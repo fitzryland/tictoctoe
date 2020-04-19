@@ -6,6 +6,7 @@ const cors = require('cors')
 const keys = require('./config/keys')
 const GameSession = require('./model/gameSession')
 const Game = require('./model/game')
+const User = require('./model/user')
 
 const app = new express()
 app.use(bodyParser.json())
@@ -35,27 +36,47 @@ let io =  socket(server);
 let ticTac = {
   // @TODO only emit to players of the game
   filter: { name: "tic-tac-toe" },
-  createGame: async () => {
+  registerUser: async (userId, socketId) => {
+    db.collections.users.updateOne(
+      { userId: userId },
+      {
+        $set: {
+          userId: userId,
+          socketId: socketId
+        }
+      },
+      { upsert: true }
+    )
+  },
+  createGame: async (userId) => {
     let gameState = await ticTac.getNewState()
+    gameState.users.push(userId)
     let gameId = Math.floor(Math.random() * 10000)
-    let newSession = await new GameSession({
+    let gameData = {
       name: 'Tic Tac Toe',
       state: gameState,
       id: gameId
-    }).save()
-    io.emit("newGame", newSession)
+    }
+    let newSession = await new GameSession(gameData).save().then((entry) => {
+      ticTac.sendTo(gameId, 'newGame', entry)
+    })
   },
-  getGame: async (gameId) => {
-    let curState = await ticTac.getState(gameId)
-    io.emit('updateGame', curState)
+  joinGame: async (gameId, userId) => {
+    let curState = await ticTac.updateState(gameId, (gameState) => {
+      if ( ! gameState.users.includes(userId) ) {
+        gameState.users.push(userId)
+      }
+      return gameState
+    })
+    ticTac.sendTo(gameId, 'updateGame', curState)
   },
   getNewState: async () => {
-    let game = await db.collections.games.findOne(ticTac.filter)
+    let game = await Game.findOne({ name: "tic-tac-toe" })
     return game.state
   },
   getState: async (gameId) => {
     let that = this
-    let game = await db.collections.gamesessions.findOne({ id: gameId })
+    let game = await GameSession.findOne({ id: gameId })
     if ( game == null ) {
       game = { status: false }
     } else {
@@ -64,24 +85,38 @@ let ticTac = {
     return game
   },
   setState: async (gameId, gameState) => {
-    await db.collections.gamesessions.updateOne({ id: gameId }, { $set: { state: gameState } })
-    io.emit("setBoxes", gameState.boxes)
+    await GameSession.updateOne({ id: gameId }, { $set: { state: gameState } })
+    ticTac.sendTo(gameId, 'setBoxes', gameState.boxes)
   },
   updateState: async (gameId, callback) => {
     let game = await ticTac.getState(gameId)
     let newState = callback(game.state)
     ticTac.setState(gameId, newState)
+    return newState
+  },
+  sendTo: async (gameId, command, data) => {
+    let game = await ticTac.getState(gameId)
+    await game.state.users.forEach(async (user, key) => {
+      let userEntry = await User.findOne(
+        { userId: user }
+      )
+      if ( userEntry ) {
+        io.to(userEntry.socketId).emit(command, data);
+      }
+    })
   }
 }
 
 io.on("connection", function(socket){
   console.log("Socket Connection Established with ID :"+ socket.id)
-  socket.on('createGameSession', async function() {
-    console.log('createGameSession')
-    ticTac.createGame()
+  socket.on('createGameSession', async function(userId) {
+    ticTac.createGame(userId)
   })
-  socket.on('getGameSession', async (gameId) => {
-    ticTac.getGame(gameId)
+  socket.on('registerUser', async (userId) => {
+    ticTac.registerUser(userId, socket.id)
+  })
+  socket.on('joinGameSession', async (gameId, userId) => {
+    ticTac.joinGame(gameId, userId)
   })
   socket.on("clickBox", async function(chat) {
     ticTac.updateState(chat.gameId, (gameState) => {
@@ -93,11 +128,16 @@ io.on("connection", function(socket){
     })
   })
   socket.on("resetGame", async function(gameId) {
-    console.log('game from resetGame', gameId)
     ticTac.updateState(gameId, (gameState) => {
       gameState.boxes.forEach((item, key) => {
         gameState.boxes[key].checked = false
       })
+      return gameState
+    })
+  })
+  socket.on('leaveGame', async (gameId, userId) => {
+    ticTac.updateState(gameId, (gameState) => {
+      gameState.users = gameState.users.filter(user => user !== userId )
       return gameState
     })
   })
