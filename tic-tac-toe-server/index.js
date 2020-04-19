@@ -34,8 +34,6 @@ db.once('open',function(){
 // Setting up Socket.io
 let io =  socket(server);
 let ticTac = {
-  // @TODO only emit to players of the game
-  filter: { name: "tic-tac-toe" },
   registerUser: async (userId, socketId) => {
     db.collections.users.updateOne(
       { userId: userId },

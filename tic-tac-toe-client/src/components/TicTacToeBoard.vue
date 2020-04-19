@@ -99,11 +99,8 @@
         await this.$socket.emit('resetGame', this.$store.state.gameId)
       },
       async leaveGame() {
-        // remove user from game session
         await this.$socket.emit('leaveGame', this.$store.state.gameId, this.$store.state.userId)
-        // set gameId to null
         this.$store.commit('setGameId', null)
-        // navigate to home
         this.$router.push('/')
       },
       async registerUser() {
