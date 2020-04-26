@@ -34,6 +34,32 @@ db.once('open',function(){
 // Setting up Socket.io
 let io =  socket(server);
 let ticTac = {
+  clickBox: async (clickData) => {
+    // clickData: {
+    //   gameId: '',
+    //   box: '',
+    //   userId: ''
+    // }
+    let game = await GameSession.findOne({ id: clickData.gameId })
+    let curUserStatus = game.state.users.filter(el => el.id === clickData.userId)
+    if ( curUserStatus[0].isTurn ) {
+      ticTac.updateState(clickData.gameId, (gameState) => {
+        let i = gameState.boxes.findIndex((el) => {
+          if ( el.id == clickData.box) return true
+        })
+        gameState.boxes[i].checked = curUserStatus[0].team
+        // @TODO change who's turn it is
+        gameState.users.forEach((user, key) => {
+          if ( ! user.isObserver ) {
+            gameState.users[key].isTurn = ! gameState.users[key].isTurn
+          }
+        })
+        return gameState
+      })
+    } else {
+      // @TODO issue a notice that it is not their turn
+    }
+  },
   registerUser: async (userId, socketId) => {
     db.collections.users.updateOne(
       { userId: userId },
@@ -56,7 +82,7 @@ let ticTac = {
       id: gameId
     }
     let newSession = await new GameSession(gameData).save().then((entry) => {
-      ticTac.sendTo(gameId, 'newGame', entry)
+      ticTac.sendTo(gameId, entry)
     })
   },
   joinGame: async (gameId, userId) => {
@@ -64,7 +90,6 @@ let ticTac = {
       gameState = ticTac.addUserToGame(userId, gameState)
       return gameState
     })
-    ticTac.sendTo(gameId, 'updateGame', curState)
   },
   addUserToGame: (userId, gameState) => {
     let user = {
@@ -107,8 +132,10 @@ let ticTac = {
     return game
   },
   setState: async (gameId, gameState) => {
-    await GameSession.updateOne({ id: gameId }, { $set: { state: gameState } })
-    ticTac.sendTo(gameId, 'setBoxes', gameState.boxes)
+    await GameSession.updateOne({ id: gameId }, { $set: { state: gameState } }).then( async (entry) => {
+      let curGame = await GameSession.findOne({ id: gameId })
+      ticTac.sendTo(gameId, curGame)
+    })
   },
   updateState: async (gameId, callback) => {
     let game = await ticTac.getState(gameId)
@@ -116,14 +143,26 @@ let ticTac = {
     ticTac.setState(gameId, newState)
     return newState
   },
-  sendTo: async (gameId, command, data) => {
+  sendTo: async (gameId, data) => {
     let game = await ticTac.getState(gameId)
+    let clientGame = {
+      id: game.id,
+      boxes: game.state.boxes,
+      name: game.name,
+      isTurn: false,
+      team: false,
+      isObserver: true
+    }
     await game.state.users.forEach(async (user, key) => {
       let userEntry = await User.findOne(
         { userId: user.id }
       )
       if ( userEntry ) {
-        io.to(userEntry.socketId).emit(command, data);
+        let curUserStatus = game.state.users.filter(el => el.id === user.id)
+        clientGame.isTurn = curUserStatus[0].isTurn
+        clientGame.team = curUserStatus[0].team
+        clientGame.isObserver = curUserStatus[0].isObserver
+        io.to(userEntry.socketId).emit('updateGame', clientGame);
       }
     })
   }
@@ -140,14 +179,8 @@ io.on("connection", function(socket){
   socket.on('joinGameSession', async (gameId, userId) => {
     ticTac.joinGame(gameId, userId)
   })
-  socket.on("clickBox", async function(chat) {
-    ticTac.updateState(chat.gameId, (gameState) => {
-      let i = gameState.boxes.findIndex((el) => {
-        if ( el.id == chat.box) return true
-      })
-      gameState.boxes[i].checked = true
-      return gameState
-    })
+  socket.on("clickBox", async function(clickData) {
+    ticTac.clickBox(clickData)
   })
   socket.on("resetGame", async function(gameId) {
     ticTac.updateState(gameId, (gameState) => {

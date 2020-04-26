@@ -23,19 +23,22 @@ export const store = new Vuex.Store({
     name: '',
     userId: 'U' + Math.floor(Math.random() * 10000),
     userName: '',
-    isMyTurn: false,
+    isTurn: false,
     team: false,
     isObserver: true
   },
   mutations: {
-    newGame (state, payload) {
-      console.log('payload', payload)
-      state.boxes = payload.state.boxes
+    updateGameMut (state, payload) {
+      console.log('newGame store')
+      state.boxes = payload.boxes
       state.gameId = payload.id
       state.name = payload.name
+      state.isTurn = payload.isTurn
+      state.team = payload.team
+      state.isObserver = payload.isObserver
     },
     setBoxesMut (state, payload) {
-      state.boxes = payload
+      state.boxes = payload.state.boxes
     },
     setGameId (state, payload) {
       state.gameId = payload
