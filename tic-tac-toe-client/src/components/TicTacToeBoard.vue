@@ -134,13 +134,12 @@
   &.active {
     background-color: $c-teal;
   }
-  &.is-x,
-  &.is-o {
-    &:before {
-    }
-  }
   &.is-x {}
   &.is-o {}
+  path,
+  circle {
+    stroke: $c-darkPurple;
+  }
 }
 .header {
   background-color: $c-darkPurple;
