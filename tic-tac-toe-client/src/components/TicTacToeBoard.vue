@@ -149,18 +149,23 @@
   grid-template-rows: 100px 100px 100px;
 }
 .cell {
-  border: 2px solid darkgray;
-}
-.cell.active {
-  background-color: lightblue;
-}
-.buttons {
-  display: flex;
-  margin-top: 100px;
-}
-.button {
-  font-size: 18px;
-  padding: 10px 20px;
+  border-top: none;
+  border-right: 2px solid $c-pink;
+  border-bottom: 2px solid $c-pink;
+  border-left: none;
+  &.active {
+    background-color: $c-teal;
+  }
+  &:nth-child(3),
+  &:nth-child(6),
+  &:nth-child(9) {
+    border-right: none;
+  }
+  &:nth-child(7),
+  &:nth-child(8),
+  &:nth-child(9) {
+    border-bottom: none;
+  }
 }
 .header {
   background-color: $c-darkPurple;

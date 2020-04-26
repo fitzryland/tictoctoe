@@ -10,7 +10,7 @@
       {{ userName }}
     </div>
     <form
-      class="user_reg"
+      class="user_reg co-box"
       v-bind:class="{'is-closed': emptyUserName}"
       v-on:submit.prevent="setUserName"
       id="js-user_form"
@@ -26,7 +26,10 @@
           >
         </label>
         <button
-          class="username_submit"
+          class="
+            username_submit
+            co-button
+          "
           type="submit"
         >Submit</button>
       </div>
@@ -66,11 +69,8 @@
     position: relative;
   }
   .user_reg {
-    background-color: $c-darkPurple;
-    border: 2px solid $c-teal;
     font-size: 16px;
     left: -10px;
-    padding: 15px 15px 20px 15px;
     position: absolute;
     top: calc(100% + 20px);
     transition: opacity 0.5s ease, transform 0.7s ease;
@@ -110,19 +110,7 @@
     margin-right: 10px;
     padding: 5px 10px;
   }
-  .username_submit {
-    background-color: transparent;
-    border: 2px solid $c-teal;
-    color: white;
-    padding: 5px 10px;
-    transition: color 0.2s ease, background-color 0.2s ease;
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: $c-teal;
-      color: #180d27;
-    }
-  }
+  .username_submit {}
   .icon_wrap {
     align-items: center;
     background-color: $c-teal;

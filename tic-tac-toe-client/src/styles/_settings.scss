@@ -1,2 +1,21 @@
 $c-teal: #c1f5ed;
 $c-darkPurple: #180d27;
+$c-pink: #c590d6;
+.co-button {
+  background-color: transparent;
+  border: 2px solid $c-teal;
+  color: $c-teal;
+  padding: 5px 10px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: $c-teal;
+    color: #180d27;
+  }
+}
+.co-box {
+  background-color: $c-darkPurple;
+  border: 2px solid $c-teal;
+  padding: 15px 15px 20px 15px;
+}
