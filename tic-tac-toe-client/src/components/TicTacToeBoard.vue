@@ -63,16 +63,15 @@
         this.isConnected = false;
       },
       newGame (data) {
-        this.$store.dispatch('newGame', data)
-        this.$store.commit('setGameId', data.id)
+        this.$store.commit('newGame', data)
       },
       setBoxes (data) {
         this.$store.dispatch('checkBox', data)
       },
-      updateGame (game) {
-        if ( game.status ) {
+      updateGame (data) {
+        if ( data.status ) {
           // update the state
-          this.$store.commit('newGameMut', game)
+          this.$store.commit('newGame', data)
         } else {
           // @TODO display error
         }

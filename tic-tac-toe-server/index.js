@@ -48,7 +48,7 @@ let ticTac = {
   },
   createGame: async (userId) => {
     let gameState = await ticTac.getNewState()
-    gameState.users.push(userId)
+    gameState = ticTac.addUserToGame(userId, gameState)
     let gameId = Math.floor(Math.random() * 10000)
     let gameData = {
       name: 'Tic Tac Toe',
@@ -61,12 +61,36 @@ let ticTac = {
   },
   joinGame: async (gameId, userId) => {
     let curState = await ticTac.updateState(gameId, (gameState) => {
-      if ( ! gameState.users.includes(userId) ) {
-        gameState.users.push(userId)
-      }
+      gameState = ticTac.addUserToGame(userId, gameState)
       return gameState
     })
     ticTac.sendTo(gameId, 'updateGame', curState)
+  },
+  addUserToGame: (userId, gameState) => {
+    let user = {
+      id: userId,
+      isTurn: false,
+      team: false,
+      isObserver: true
+    }
+    let existingUser = gameState.users.find( el => el['id'] === userId )
+    let usersLength = gameState.users.length
+    // if no other players
+    if ( usersLength === 0 ) {
+      // add player X and is turn = true
+      user.isTurn = true
+      user.team = 'X'
+      user.isObserver = false
+    } else if ( usersLength < 2 ) {
+      // join the game
+      user.team = 'O'
+      user.isObserver = false
+    } else {}
+    // if the user isn't already part of the game
+    if ( ! existingUser ) {
+      gameState.users.push(user)
+    }
+    return gameState
   },
   getNewState: async () => {
     let game = await Game.findOne({ name: "tic-tac-toe" })
@@ -96,7 +120,7 @@ let ticTac = {
     let game = await ticTac.getState(gameId)
     await game.state.users.forEach(async (user, key) => {
       let userEntry = await User.findOne(
-        { userId: user }
+        { userId: user.id }
       )
       if ( userEntry ) {
         io.to(userEntry.socketId).emit(command, data);

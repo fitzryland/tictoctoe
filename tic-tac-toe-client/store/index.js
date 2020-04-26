@@ -22,11 +22,14 @@ export const store = new Vuex.Store({
     gameId: '',
     name: '',
     userId: 'U' + Math.floor(Math.random() * 10000),
-    userName: ''
+    userName: '',
+    isMyTurn: false,
+    team: false,
+    isObserver: true
   },
   mutations: {
-    newGameMut (state, payload) {
-      // state
+    newGame (state, payload) {
+      console.log('payload', payload)
       state.boxes = payload.state.boxes
       state.gameId = payload.id
       state.name = payload.name
@@ -42,9 +45,6 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
-    newGame: async (store, payload) => {
-      store.commit('newGameMut', payload)
-    },
     checkBox: async (store, payload) => {
       store.commit('setBoxesMut', payload)
     },
