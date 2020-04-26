@@ -32,8 +32,16 @@
     methods: {
       joinGame(e) {
         let gameId = document.getElementById('js-game_id_input').value
+        this.goToGame(gameId)
+      },
+      goToGame(gameId) {
         this.$store.commit('setGameId', gameId)
         this.$router.push('tic-tac-toe')
+      }
+    },
+    mounted() {
+      if ( this.$route.query.game ) {
+        this.goToGame(this.$route.query.game)
       }
     }
   }

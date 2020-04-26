@@ -25,7 +25,10 @@
       class="share"
       v-bind:class="{'is-closed': hideShare}"
     >
-      Game ID: {{ gameId }}
+      Game ID:
+      <a
+        v-bind:href="'http://localhost:8080/?game=' + gameId"
+      >{{ gameId }}</a>
     </div>
   </div>
 </template>
