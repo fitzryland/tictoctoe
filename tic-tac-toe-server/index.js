@@ -140,9 +140,3 @@ io.on("connection", function(socket){
     })
   })
 })
-
-app.get('/set', async (req,res) => {
-  db.collections.games.findOne({ name: "tic-tac-toe" }, (err, game) => {
-    res.send(game.state.boxes)
-  });
-})

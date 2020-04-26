@@ -1,18 +1,19 @@
 <template>
-  <div id="app">
+  <main id="app">
     <router-view />
-  </div>
+  </main>
 </template>
 
 <script>
-    // <TicTagToeBoard />
-// import TicTagToeBoard from './components/TicTacToeBoard.vue'
 export default {
-  name: 'App',
-  components: {
-    // TicTagToeBoard
-  }
+  name: 'App'
 }
 </script>
 
 
+<style>
+  body {
+    font-size: 18px;
+    font-family: 'Raleway', sans-serif;
+  }
+</style>

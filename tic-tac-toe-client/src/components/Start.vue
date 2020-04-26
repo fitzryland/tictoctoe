@@ -21,7 +21,6 @@
     name: 'Start',
     methods: {
       joinGame(e) {
-        e.preventDefault()
         let gameId = document.getElementById('js-game_id_input').value
         this.$store.commit('setGameId', gameId)
         this.$router.push('tic-tac-toe')

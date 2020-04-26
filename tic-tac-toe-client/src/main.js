@@ -4,10 +4,18 @@ import App from './App.vue'
 import VueSocketIO from 'vue-socket.io'
 import { store } from '../store'
 
-import User from './components/User.vue'
 import Start from './components/Start.vue'
 import TicTacToeBoard from './components/TicTacToeBoard.vue'
 
+import 'normalize.css'
+
+import WebFont from'webfontloader'
+
+WebFont.load({
+  google: {
+    families: ['Raleway:wght@400;600']
+  }
+});
 
 Vue.use(VueRouter)
 Vue.use(new VueSocketIO({
@@ -24,7 +32,6 @@ Vue.config.productionTip = false
 
 const routes = [
   { path: '/', component: Start },
-  { path: '/user', component: User },
   { path: '/tic-tac-toe', component: TicTacToeBoard }
 ]
 const router = new VueRouter({

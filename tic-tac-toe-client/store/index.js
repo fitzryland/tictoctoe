@@ -9,7 +9,8 @@ const vuexLocalStorage = new VuexPersist({
   storage: window.localStorage,
   reducer: state => ({
     gameId: state.gameId,
-    userId: state.userId
+    userId: state.userId,
+    userName: state.userName
   })
 })
 
@@ -20,7 +21,8 @@ export const store = new Vuex.Store({
     boxes: [],
     gameId: '',
     name: '',
-    userId: 'U' + Math.floor(Math.random() * 10000)
+    userId: 'U' + Math.floor(Math.random() * 10000),
+    userName: ''
   },
   mutations: {
     newGameMut (state, payload) {
@@ -34,6 +36,9 @@ export const store = new Vuex.Store({
     },
     setGameId (state, payload) {
       state.gameId = payload
+    },
+    setUserName (state, payload) {
+      state.userName = payload
     }
   },
   actions: {
