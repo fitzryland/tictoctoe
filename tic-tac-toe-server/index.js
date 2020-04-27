@@ -34,6 +34,39 @@ db.once('open',function(){
 // Setting up Socket.io
 let io =  socket(server);
 let ticTac = {
+  winningSets: [
+    ['a1', 'a2', 'a3'],
+    ['b1', 'b2', 'b3'],
+    ['c1', 'c2', 'c3'],
+    ['a1', 'b1', 'c1'],
+    ['a2', 'b2', 'c2'],
+    ['a3', 'b3', 'c3'],
+    ['a1', 'b2', 'c3'],
+    ['a3', 'b2', 'c1'],
+  ],
+  setWinning: (gameState) => {
+    // @TODO
+    let score = {}
+    gameState.boxes.forEach((box, key) => {
+      if ( box.checked ) {
+        if ( box.checked in score ) {
+          score[box.checked].push(box.id)
+        } else {
+          score[box.checked] = [ box.id ]
+        }
+      }
+    })
+    Object.keys(score).forEach((userMark) => {
+      let userScore = score[userMark]
+      ticTac.winningSets.forEach((set, setKey) => {
+        let overlap = set.filter( setBox => userScore.includes(setBox) )
+        if ( overlap.length >= 3 ) {
+          gameState.winner = userMark
+        }
+      })
+    })
+    return gameState
+  },
   clickBox: async (clickData) => {
     // clickData: {
     //   gameId: '',
@@ -48,7 +81,8 @@ let ticTac = {
           if ( el.id == clickData.box) return true
         })
         gameState.boxes[i].checked = curUserStatus[0].team
-        // @TODO change who's turn it is
+        gameState = ticTac.setWinning(gameState)
+        // change who's turn it is
         gameState.users.forEach((user, key) => {
           if ( ! user.isObserver ) {
             gameState.users[key].isTurn = ! gameState.users[key].isTurn
@@ -152,6 +186,7 @@ let ticTac = {
       isTurn: false,
       team: false,
       isObserver: true
+      // @TODO send the winner and loser that info
     }
     await game.state.users.forEach(async (user, key) => {
       let userEntry = await User.findOne(
