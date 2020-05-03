@@ -50,22 +50,3 @@ new Vue({
   router,
   render: h => h(App),
 }).$mount('#app')
-
-
-//
-// Next Up! @TODO
-//
-/*
-
-* setup vue router
-* user arives - either
-  * create new game - Done!
-  * join existing - up next
-* next, check to see if they are already have user ID in cookies
-  * if yes, allow them to reset it
-  * if no, get them to create a user
-
-* update game logic to account for different players
-
-
-*/

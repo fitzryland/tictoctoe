@@ -30,7 +30,6 @@ export const store = new Vuex.Store({
   },
   mutations: {
     updateGameMut (state, payload) {
-      console.log('newGame store')
       state.boxes = payload.boxes
       state.gameId = payload.id
       state.name = payload.name

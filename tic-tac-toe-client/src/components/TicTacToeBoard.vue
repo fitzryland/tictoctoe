@@ -80,8 +80,6 @@
         return this.$store.state.isObserver
       },
       winner() {
-        // @TODO this isn't returning what it should
-        console.log('this.$store.state', this.$store.state)
         return this.$store.state.winner
       }
     },

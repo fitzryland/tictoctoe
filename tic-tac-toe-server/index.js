@@ -73,8 +73,6 @@ let ticTac = {
     ) {
       gameState.winner = 'tie'
     }
-    console.log('score', score)
-    console.log('gameState', gameState)
     return gameState
   },
   clickBox: async (clickData) => {
