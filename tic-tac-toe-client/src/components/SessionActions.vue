@@ -1,5 +1,6 @@
 <template>
   <div class="session_actions">
+    <!--
     <button
       class="
         session_actions__icon
@@ -15,6 +16,7 @@
     >
       <RestartIcon />
     </button>
+  -->
     <button
       class="session_actions__icon"
       v-on:click=leaveGame
@@ -33,15 +35,15 @@
   </div>
 </template>
 <script>
-  import RestartIcon from '../assets/icons/refresh-cw.svg'
+  // import RestartIcon from '../assets/icons/refresh-cw.svg'
   import ExitIcon from '../assets/icons/x.svg'
-  import ShareIcon from '../assets/icons/share.svg'
+  // import ShareIcon from '../assets/icons/share.svg'
   export default {
     name: 'SessionActions',
     components: {
-      RestartIcon,
-      ExitIcon,
-      ShareIcon
+      // RestartIcon,
+      // ShareIcon,
+      ExitIcon
     },
     data() {
       return {

@@ -4,41 +4,50 @@
       <User />
       <SessionActions />
     </header>
-    <div class="board">
-      <button
-        v-for="box in boxes"
-        v-bind:key="box['id']"
-        v-on:click="clickBox"
-        v-bind:data-id=box.id
-        class="cell"
-        v-bind:class="{
-          active: box.checked,
-          'is-x': box.checked === 'X',
-          'is-o': box.checked === 'O'
-        }"
-      >
-        <X v-if="box.checked === 'X'" />
-        <O v-if="box.checked === 'O'" />
-      </button>
-    </div>
-    <div class="status">
-      <p v-if=isObserver>You are just an observer</p>
-      <div v-else>
-        <div v-if="winner === 'in-play'">
-          <p v-if=isTurn>it is your turn</p>
-          <p v-else>it is your opponent's turn</p>
-        </div>
-        <p v-else-if="winner === 'tie'">It's a tie. No one wins :(</p>
-        <p v-else-if="winner === team">You win!!!</p>
-        <p v-else>Your a fucking looooser!</p>
-        <div class="team">
-          You are team
-          <div class="team__icon_wrap">
-            <X v-if="team === 'X'" />
-            <O v-if="team === 'O'" />
+    <div v-if="usersLength > 1">
+      <div class="board">
+        <button
+          v-for="box in boxes"
+          v-bind:key="box['id']"
+          v-on:click="clickBox"
+          v-bind:data-id=box.id
+          class="cell"
+          v-bind:class="{
+            active: box.checked,
+            'is-x': box.checked === 'X',
+            'is-o': box.checked === 'O'
+          }"
+        >
+          <X v-if="box.checked === 'X'" />
+          <O v-if="box.checked === 'O'" />
+        </button>
+      </div>
+      <div class="status">
+        <p v-if=isObserver>You are just an observer</p>
+        <div v-else>
+          <div v-if="winner === 'in-play'">
+            <p v-if=isTurn>it is your turn</p>
+            <p v-else>it is your opponent's turn</p>
+          </div>
+          <p v-else-if="winner === 'tie'">It's a tie. No one wins :(</p>
+          <p v-else-if="winner === team">You win!!!</p>
+          <p v-else>You loose!</p>
+          <div class="team">
+            You are team
+            <div class="team__icon_wrap">
+              <X v-if="team === 'X'" />
+              <O v-if="team === 'O'" />
+            </div>
           </div>
         </div>
       </div>
+    </div>
+    <div
+      v-else
+      class="instructions"
+    >
+      <p>instruct your opponent to join game:</p>
+      <p class="gameId">{{ gameId }}</p>
     </div>
   </div>
 </template>
@@ -81,6 +90,9 @@
       },
       winner() {
         return this.$store.state.winner
+      },
+      usersLength() {
+        return this.$store.state.usersLength
       }
     },
     async mounted () {
@@ -188,5 +200,12 @@
   svg {
     display: inline-block;
   }
+}
+.instructions {
+  padding: 20px;
+  text-align: center;
+}
+.gameId {
+  font-size: 48px
 }
 </style>

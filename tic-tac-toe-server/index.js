@@ -187,7 +187,6 @@ let ticTac = {
   },
   sendTo: async (gameId, data) => {
     let game = await ticTac.getState(gameId)
-    // console.log('game', game)
     let clientGame = {
       id: game.id,
       boxes: game.state.boxes,
@@ -195,7 +194,8 @@ let ticTac = {
       isTurn: false,
       team: false,
       isObserver: true,
-      winner: game.state.winner
+      winner: game.state.winner,
+      usersLength: game.state.users.length
     }
     await game.state.users.forEach(async (user, key) => {
       let userEntry = await User.findOne(
