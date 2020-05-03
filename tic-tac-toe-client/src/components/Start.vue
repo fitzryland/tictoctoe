@@ -1,6 +1,6 @@
 <template>
   <div class="start">
-    <h1>Tic Tac Toe</h1>
+    <h1>TicTac.fitz.To</h1>
     <p>Would you like to start a new game or join an existing game?</p>
     <router-link to="/tic-tac-toe">Start New Game</router-link>
     <p>Join a game:</p>

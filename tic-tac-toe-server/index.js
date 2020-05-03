@@ -45,10 +45,11 @@ let ticTac = {
     ['a3', 'b2', 'c1'],
   ],
   setWinning: (gameState) => {
-    // @TODO
     let score = {}
+    let boxCount = 0
     gameState.boxes.forEach((box, key) => {
       if ( box.checked ) {
+        boxCount++
         if ( box.checked in score ) {
           score[box.checked].push(box.id)
         } else {
@@ -65,6 +66,15 @@ let ticTac = {
         }
       })
     })
+    if (
+      gameState.winner === 'in-play'
+      &&
+      boxCount >= 9
+    ) {
+      gameState.winner = 'tie'
+    }
+    console.log('score', score)
+    console.log('gameState', gameState)
     return gameState
   },
   clickBox: async (clickData) => {
@@ -179,14 +189,15 @@ let ticTac = {
   },
   sendTo: async (gameId, data) => {
     let game = await ticTac.getState(gameId)
+    // console.log('game', game)
     let clientGame = {
       id: game.id,
       boxes: game.state.boxes,
       name: game.name,
       isTurn: false,
       team: false,
-      isObserver: true
-      // @TODO send the winner and loser that info
+      isObserver: true,
+      winner: game.state.winner
     }
     await game.state.users.forEach(async (user, key) => {
       let userEntry = await User.findOne(

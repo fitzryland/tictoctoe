@@ -25,7 +25,8 @@ export const store = new Vuex.Store({
     userName: '',
     isTurn: false,
     team: false,
-    isObserver: true
+    isObserver: true,
+    winner: 'in-play'
   },
   mutations: {
     updateGameMut (state, payload) {
@@ -36,6 +37,7 @@ export const store = new Vuex.Store({
       state.isTurn = payload.isTurn
       state.team = payload.team
       state.isObserver = payload.isObserver
+      state.winner = payload.winner
     },
     setBoxesMut (state, payload) {
       state.boxes = payload.state.boxes

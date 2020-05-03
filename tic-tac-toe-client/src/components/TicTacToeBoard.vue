@@ -21,10 +21,25 @@
         <O v-if="box.checked === 'O'" />
       </button>
     </div>
-    <div class="status"></div>
-    isTurn: {{ isTurn }} <br />
-    team: {{ team }} <br />
-    isObserver: {{ isObserver }} <br />
+    <div class="status">
+      <p v-if=isObserver>You are just an observer</p>
+      <div v-else>
+        <div v-if="winner === 'in-play'">
+          <p v-if=isTurn>it is your turn</p>
+          <p v-else>it is your opponent's turn</p>
+        </div>
+        <p v-else-if="winner === 'tie'">It's a tie. No one wins :(</p>
+        <p v-else-if="winner === team">You win!!!</p>
+        <p v-else>Your a fucking looooser!</p>
+        <div class="team">
+          You are team
+          <div class="team__icon_wrap">
+            <X v-if="team === 'X'" />
+            <O v-if="team === 'O'" />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -63,6 +78,11 @@
       },
       isObserver() {
         return this.$store.state.isObserver
+      },
+      winner() {
+        // @TODO this isn't returning what it should
+        console.log('this.$store.state', this.$store.state)
+        return this.$store.state.winner
       }
     },
     async mounted () {
@@ -112,9 +132,12 @@
 <style lang="scss" scoped>
 .board {
   display: grid;
-  padding: 15px;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 100px 100px 100px;
+  max-width: 400px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 15px;
 }
 .cell {
   border-top: none;
@@ -147,5 +170,25 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 20px;
+}
+.status {
+  max-width: 400px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 20px;
+  text-align: center;
+}
+.team {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  &__icon_wrap {
+    background-color: $c-teal;
+    margin-left: 10px;
+    padding: 7px 10px;
+  }
+  svg {
+    display: inline-block;
+  }
 }
 </style>
