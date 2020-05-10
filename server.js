@@ -206,8 +206,6 @@ let ticTac = {
         clientGame.isTurn = curUserStatus[0].isTurn
         clientGame.team = curUserStatus[0].team
         clientGame.isObserver = curUserStatus[0].isObserver
-        // @TODO either this isn't emitting or it isn't being
-        // received on the other end....
         io.to(userEntry.socketId).emit('updateGame', clientGame)
       }
     })
