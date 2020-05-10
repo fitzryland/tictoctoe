@@ -11,6 +11,7 @@
     "socket.io": "^2.3.0"
   },
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon server.js",
+    "start": "node server.js"
   }
 }
