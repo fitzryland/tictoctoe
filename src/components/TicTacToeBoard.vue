@@ -119,6 +119,7 @@
     },
     methods: {
       async emitNewGame() {
+        console.log('this.$socket', this.$socket)
         await this.$socket.emit('createGameSession', this.$store.state.userId)
       },
       async emitJoinGame(gameId) {
