@@ -105,6 +105,9 @@
       }
     },
     sockets: {
+      // @TODO for some reason this no longer receives
+      // messages from the server event though they are being
+      // send to the correct socket ID
       connect () {
         console.log('socket connected')
         this.isConnected = true;
@@ -114,6 +117,7 @@
         this.isConnected = false;
       },
       updateGame (data) {
+        console.log('data from updateGame socket', data)
         this.$store.commit('updateGameMut', data)
       }
     },
