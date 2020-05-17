@@ -16,7 +16,7 @@ var server = app.listen(process.env.DB_PORT,()=>{
 })
 
 // Connecting Mongo DB
-mongoose.connect(process.env.DATABASE_URL, {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true
