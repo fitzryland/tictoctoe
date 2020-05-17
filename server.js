@@ -1,4 +1,5 @@
 const express  = require('express')
+const path = require('path');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const socket = require('socket.io')
@@ -13,11 +14,11 @@ app.use(cors())
 
 const staticFileMiddleware = express.static(path.join(__dirname + '/dist'))
 app.use(staticFileMiddleware)
-app.use(history({
-  disableDotRule: true,
-  verbose: true
-}));
-app.use(staticFileMiddleware)
+// app.use(history({
+//   disableDotRule: true,
+//   verbose: true
+// }));
+// app.use(staticFileMiddleware)
 
 app.get('/', (req, res) => {
   res.render(path.join(__dirname + '/dist/index.html'))
