@@ -21,7 +21,7 @@ WebFont.load({
 Vue.use(VueRouter)
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: 'http://localhost:5000',
+  connection: 'http://localhost:2345',
   vuex: {
     store,
     actionPrefix: 'SOCKET_',

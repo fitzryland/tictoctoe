@@ -1,6 +1,6 @@
 <template>
   <div class="start">
-    <h1>TicTac.fitz.to</h1>
+    <h1>tictac.fitz.to</h1>
     <router-link class="co-button new_game_button" to="/tic-tac-toe">Start New Game</router-link>
     <form
       class="

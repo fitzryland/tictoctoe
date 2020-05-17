@@ -3,7 +3,6 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const socket = require('socket.io')
 const cors = require('cors')
-const keys = require('./config/keys')
 const GameSession = require('./model/gameSession')
 const Game = require('./model/game')
 const User = require('./model/user')
@@ -12,13 +11,12 @@ const app = new express()
 app.use(bodyParser.json())
 app.use(cors())
 
-var server = app.listen(5000,()=>{
-  console.log("Howdy, I am running at PORT 5000")
+var server = app.listen(process.env.DB_PORT,()=>{
+  console.log("Howdy, I am running at a PORT")
 })
 
 // Connecting Mongo DB
-
-mongoose.connect(keys.mongoURI, {
+mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true
