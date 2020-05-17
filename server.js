@@ -11,7 +11,7 @@ const app = new express()
 app.use(bodyParser.json())
 app.use(cors())
 
-var server = app.listen(process.env.DB_PORT,()=>{
+var server = app.listen(process.env.PORT,()=>{
   console.log("Howdy, I am running at a PORT")
 })
 
