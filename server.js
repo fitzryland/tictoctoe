@@ -11,6 +11,19 @@ const app = new express()
 app.use(bodyParser.json())
 app.use(cors())
 
+const staticFileMiddleware = express.static(path.join(__dirname + '/dist'))
+app.use(staticFileMiddleware)
+app.use(history({
+  disableDotRule: true,
+  verbose: true
+}));
+app.use(staticFileMiddleware)
+
+app.get('/', (req, res) => {
+  res.render(path.join(__dirname + '/dist/index.html'))
+})
+
+
 var server = app.listen(process.env.PORT,()=>{
   console.log("Howdy, I am running at a PORT")
 })
