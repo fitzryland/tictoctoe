@@ -26,9 +26,11 @@ app.get('/', (req, res) => {
 })
 
 
-var server = app.listen(process.env.PORT,()=>{
-  console.log("Howdy, I am running at a PORT")
-})
+var server = app
+  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+  .listen(process.env.PORT,()=>{
+    console.log("Howdy, I am running at a PORT")
+  })
 
 // Connecting Mongo DB
 mongoose.connect(process.env.MONGODB_URI, {
