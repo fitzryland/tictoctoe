@@ -60,7 +60,7 @@ export const store = new Vuex.Store({
       store.commit('setBoxesMut', payload)
     },
     setBoxes: async (store, payload) => {
-      let { data } = await Axios.get(connectionUrl . '/set')
+      let { data } = await Axios.get(connectionUrl + '/set')
       store.commit('setBoxesMut', data);
     }
   },
