@@ -25,9 +25,7 @@ app.get('/', (req, res) => {
   res.render(path.join(__dirname + '/dist/index.html'))
 })
 
-
 var server = app
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
   .listen(process.env.PORT,()=>{
     console.log("Howdy, I am running at a PORT")
   })

@@ -17,10 +17,14 @@ WebFont.load({
     families: ['Raleway:wght@400;600']
   }
 });
-
+var connectionUrl = 'http://localhost:2345';
+if ( process.env.NODE_ENV === 'production' ) {
+   connectionUrl = 'https://tictac-fitz-to.herokuapp.com:2345';
+}
 Vue.use(VueRouter)
 Vue.use(new VueSocketIO({
   debug: true,
+  // connection: process.env.DOMAIN,
   connection: 'http://localhost:2345',
   vuex: {
     store,

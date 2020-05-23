@@ -14,6 +14,11 @@ const vuexLocalStorage = new VuexPersist({
   })
 })
 
+var connectionUrl = 'http://localhost:2345';
+if ( process.env.NODE_ENV === 'production' ) {
+   connectionUrl = 'https://tictac-fitz-to.herokuapp.com:2345';
+}
+
 // @TODO this file needs a boatload of sanitization
 
 export const store = new Vuex.Store({
@@ -55,7 +60,7 @@ export const store = new Vuex.Store({
       store.commit('setBoxesMut', payload)
     },
     setBoxes: async (store, payload) => {
-      let { data } = await Axios.get('http://localhost:2345/set')
+      let { data } = await Axios.get(connectionUrl . '/set')
       store.commit('setBoxesMut', data);
     }
   },
