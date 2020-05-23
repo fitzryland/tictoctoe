@@ -23,6 +23,7 @@
     >
       <ExitIcon />
     </button>
+    <!--
     <div
       class="share"
       v-bind:class="{'is-closed': hideShare}"
@@ -32,6 +33,7 @@
         v-bind:href="'http://localhost:8080/?game=' + gameId"
       >{{ gameId }}</a>
     </div>
+    -->
   </div>
 </template>
 <script>
