@@ -225,6 +225,7 @@ let ticTac = {
   }
 }
 
+console.log('io', io)
 io.on("connection", function(socket){
   console.log("Socket Connection Established with ID :"+ socket.id)
   socket.on('createGameSession', async function(userId) {
