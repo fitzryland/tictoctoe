@@ -1,7 +1,6 @@
 <template>
   <div class="tic_tac_toe">
     <header class="header">
-      <User />
       <SessionActions />
     </header>
     <div v-if="usersLength > 1">
@@ -53,14 +52,12 @@
 </template>
 <script>
   import VueSocketIO from 'vue-socket.io'
-  import User from './User.vue'
   import SessionActions from './SessionActions.vue'
   import X from '../assets/icons/x.svg'
   import O from '../assets/icons/circle.svg'
   export default {
     name: 'TicTacToeBoard',
     components: {
-      User,
       SessionActions,
       X,
       O
