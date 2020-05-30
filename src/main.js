@@ -20,7 +20,7 @@ WebFont.load({
 // console.log('process.env', process.env)
 var connectionUrl = 'http://localhost:2345';
 if ( process.env.NODE_ENV === 'production' ) {
-   connectionUrl = 'https://tictac-fitz-to.herokuapp.com:2345';
+   connectionUrl = 'https://tictac-fitz-to.herokuapp.com';
 }
 Vue.use(VueRouter)
 Vue.use(new VueSocketIO({

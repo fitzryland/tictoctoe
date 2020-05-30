@@ -16,7 +16,7 @@ const vuexLocalStorage = new VuexPersist({
 
 var connectionUrl = 'http://localhost:2345';
 if ( process.env.NODE_ENV === 'production' ) {
-   connectionUrl = 'https://tictac-fitz-to.herokuapp.com:2345';
+   connectionUrl = 'https://tictac-fitz-to.herokuapp.com';
 }
 
 // @TODO this file needs a boatload of sanitization
